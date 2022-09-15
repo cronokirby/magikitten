@@ -85,6 +85,9 @@ impl Transcript {
     /// as an RNG.
     pub fn challenge(&mut self, label: &'static [u8]) -> MeowRng {
         let mut seed = [0u8; SEED_SIZE];
+        self.feed_meta_len(label.len(), false);
+        self.meow.meta_ad(label, true);
+        self.feed_meta_len(0, true);
         self.meow.prf(&mut seed, false);
         MeowRng::new(&seed)
     }
