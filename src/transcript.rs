@@ -120,4 +120,17 @@ mod test {
 
         assert_ne!(x0, x1);
     }
+
+    #[test]
+    fn test_changing_protocol_gives_different_results() {
+        let mut t0 = Transcript::new(b"protocol A");
+        t0.message(b"label", b"message");
+        let x0 = t0.challenge(b"challenge").next_u64();
+
+        let mut t1 = Transcript::new(b"protocol B");
+        t1.message(b"label", b"message");
+        let x1 = t0.challenge(b"challenge").next_u64();
+
+        assert_ne!(x0, x1);
+    }
 }
