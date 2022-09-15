@@ -78,18 +78,33 @@ impl Transcript {
 
 #[cfg(test)]
 mod test {
-    use super::serialize_len;
+    use rand_core::RngCore;
+
+    use super::{serialize_len, Transcript};
 
     #[test]
     fn test_serialize_len() {
         for size in 1..4 {
             let len = (1 << (7 * size)) - 1;
             let mut expected = [0u8; 10];
-            for e_i in &mut expected[..size-1] {
+            for e_i in &mut expected[..size - 1] {
                 *e_i = 0xFF;
             }
             expected[size - 1] = 0x7F;
             assert_eq!(serialize_len(len), (expected, size));
         }
+    }
+
+    #[test]
+    fn test_changing_label_gives_different_results() {
+        let mut t0 = Transcript::new(b"protocol");
+        t0.message(b"label A", b"message");
+        let x0 = t0.challenge(b"challenge").next_u64();
+
+        let mut t1 = Transcript::new(b"protocol");
+        t1.message(b"label B", b"message");
+        let x1 = t0.challenge(b"challenge").next_u64();
+
+        assert_ne!(x0, x1);
     }
 }
