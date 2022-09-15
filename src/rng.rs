@@ -1,5 +1,5 @@
 use ck_meow::Meow;
-use rand_core::RngCore;
+use rand_core::{CryptoRng, RngCore};
 
 /// The size of the seeds our RNG consumes, in bytes.
 pub const SEED_SIZE: usize = 32;
@@ -53,6 +53,8 @@ impl RngCore for MeowRng {
         Ok(())
     }
 }
+
+impl CryptoRng for MeowRng {}
 
 #[cfg(test)]
 mod test {
