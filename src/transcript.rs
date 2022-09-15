@@ -22,6 +22,28 @@ fn serialize_len(len: usize) -> ([u8; 10], usize) {
     (out, size as usize)
 }
 
+/// Represents a transcript.
+///
+/// A transcript is, in essence, a way of making a public coin protocol
+/// non-interactive. The transcript can absorb messages, and then produce
+/// challenges based on the messages in response.
+///
+/// ## Basic Flow
+///
+/// The basic flow of using a transcript involves initializing it, adding
+/// in messages, and then generating challenges:
+///
+/// ```rust
+/// # use magikitten::Transcript;
+/// # use rand_core::RngCore;
+/// let mut transcript = Transcript::new(b"my protocol");
+/// transcript.message(b"message0", b"hello world!");
+/// let c0 = transcript.challenge(b"challenge0").next_u64();
+/// transcript.message(b"message1", b"hello again!");
+/// let c1 = transcript.challenge(b"challenge1").next_u64();
+/// ```
+///
+/// Notice that you can mix adding messages and extracting challenges.
 pub struct Transcript {
     meow: Meow,
 }
