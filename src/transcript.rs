@@ -27,13 +27,34 @@ pub struct Transcript {
 }
 
 impl Transcript {
+    /// Add a message to this transcript.
+    ///
+    /// You can also add a label to distinguish this message from others.
+    ///
+    /// The labels used for different objects in a transcript should, ideally,
+    /// be unique. It's ok if some labels are prefixes of others.
+    pub fn message(&mut self, label: &'static [u8], data: &[u8]) {
+        self.feed_meta_len(label.len(), false);
+        self.meow.meta_ad(label, true);
+        self.feed_meta_len(data.len(), true);
+        self.meow.ad(data, false);
+    }
+
     /// Generate a challenge given the transcript so far.
     ///
     /// This challenge takes the form of an infinite stream of bytes, represented
     /// as an RNG.
-    pub fn challenge(&mut self, label: &'static str) -> MeowRng {
+    pub fn challenge(&mut self, label: &'static [u8]) -> MeowRng {
         let mut seed = [0u8; SEED_SIZE];
         self.meow.prf(&mut seed, false);
         MeowRng::new(&seed)
+    }
+}
+
+impl Transcript {
+    /// Feed in a length as metadata.
+    fn feed_meta_len(&mut self, len: usize, more: bool) {
+        let (data, size) = serialize_len(len);
+        self.meow.meta_ad(&data[..size], more);
     }
 }
