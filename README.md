@@ -13,7 +13,7 @@ and provides a similar construction, albeit with some differences.
 
 # Usage
 
-The essence of the using the library is that you initialize a `Transcript` object,
+The essence of using the library is that you initialize a `Transcript` object,
 and then alternate between feeding in data and extracting out randomness:
 
 ```rust
