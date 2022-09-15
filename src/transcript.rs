@@ -27,6 +27,23 @@ pub struct Transcript {
 }
 
 impl Transcript {
+    /// Initialize a new transcript.
+    ///
+    /// This also takes a string describing the protocol the transcript is
+    /// being used for. This is used for domain separation.
+    ///
+    /// Note that for most situations, constructions should simply accept
+    /// a transcript as input, rather than creating it themselves. This allows
+    /// a scheme to be used in various contexts, including in sequential composition
+    /// with other schemes.
+    pub fn new(protocol: &'static [u8]) -> Self {
+        let mut meow = Meow::new(protocol);
+        // To prevent potential shenanigans if the protocol string overlaps
+        // with subsequent metadata.
+        meow.ratchet();
+        Self { meow }
+    }
+
     /// Add a message to this transcript.
     ///
     /// You can also add a label to distinguish this message from others.
