@@ -1,4 +1,4 @@
-# Magikitten
+# Magikitten [![](https://img.shields.io/crates/v/magikitten.svg)](https://crates.io/crates/magikitten) [![](https://img.shields.io/badge/dynamic/json.svg?label=docs&uri=https%3A%2F%2Fcrates.io%2Fapi%2Fv1%2Fcrates%2Fmagikitten%2Fversions&query=%24.versions%5B0%5D.num&colorB=4F74A6)](https://docs.rs/magikitten)
 
 <img
  width="33%"
