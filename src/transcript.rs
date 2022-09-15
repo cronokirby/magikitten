@@ -75,3 +75,21 @@ impl Transcript {
         self.meow.meta_ad(&data[..size], more);
     }
 }
+
+#[cfg(test)]
+mod test {
+    use super::serialize_len;
+
+    #[test]
+    fn test_serialize_len() {
+        for size in 1..4 {
+            let len = (1 << (7 * size)) - 1;
+            let mut expected = [0u8; 10];
+            for e_i in &mut expected[..size-1] {
+                *e_i = 0xFF;
+            }
+            expected[size - 1] = 0x7F;
+            assert_eq!(serialize_len(len), (expected, size));
+        }
+    }
+}
