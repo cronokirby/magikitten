@@ -49,6 +49,13 @@ pub struct Transcript {
 }
 
 impl Transcript {
+    /// Return a cloned version of this transcript.
+    fn cloned(&self) -> Self {
+        Self {
+            meow: self.meow.clone(),
+        }
+    }
+
     /// Initialize a new transcript.
     ///
     /// This also takes a string describing the protocol the transcript is
@@ -90,6 +97,22 @@ impl Transcript {
         self.feed_meta_len(0, true);
         self.meow.prf(&mut seed, false);
         MeowRng::new(&seed)
+    }
+
+    /// Create a forked version of this transcript.
+    ///
+    /// This is often useful in the context of cryptographic protocols. You
+    /// might want to verify multiple proofs generated at the some point
+    /// in the transcript, but by different people. You can use this primitive
+    /// to fork the transcript to check those proofs, with some domain separation
+    /// identifying each person.
+    /// 
+    /// Forking without domain separation is intentionally not possible, to prevent
+    /// potential misuse where the same randomness is generated in different contexts.
+    pub fn forked(&self, label: &'static [u8], data: &[u8]) -> Self {
+        let mut out = self.cloned();
+        out.message(label, data);
+        out
     }
 }
 
